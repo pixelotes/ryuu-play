@@ -28,6 +28,8 @@ export class TableSidebarComponent implements OnDestroy, OnChanges {
   public gameId: number;
   public isTopPlayerActive: boolean;
   public isBottomPlayerActive: boolean;
+  public isPlayer: boolean;
+  public isYourTurn: boolean;
 
   private timerId: number | undefined;
   private destroyRef = inject(DestroyRef);
@@ -110,6 +112,8 @@ export class TableSidebarComponent implements OnDestroy, OnChanges {
       this.gameId = undefined;
       this.isTopPlayerActive = false;
       this.isBottomPlayerActive = false;
+      this.isPlayer = false;
+      this.isYourTurn = false;
       this.bottomReplayPlayer = undefined;
       this.topReplayPlayer = undefined;
       this.bottomPlayerStats = undefined;
@@ -133,6 +137,10 @@ export class TableSidebarComponent implements OnDestroy, OnChanges {
     this.turn = state.turn;
     this.isTopPlayerActive = this.isPlayerActive(state, this.topPlayer);
     this.isBottomPlayerActive = this.isPlayerActive(state, this.bottomPlayer);
+    this.isPlayer = !!((this.topPlayer && this.topPlayer.id === this.clientId)
+      || (this.bottomPlayer && this.bottomPlayer.id === this.clientId));
+    this.isYourTurn = !!((this.bottomPlayer && this.bottomPlayer.id === this.clientId && this.isBottomPlayerActive)
+      || (this.topPlayer && this.topPlayer.id === this.clientId && this.isTopPlayerActive));
     this.topPlayerStats = this.getPlayerStats(this.gameState, this.topPlayer);
     this.bottomPlayerStats = this.getPlayerStats(this.gameState, this.bottomPlayer);
     this.bottomReplayPlayer = undefined;

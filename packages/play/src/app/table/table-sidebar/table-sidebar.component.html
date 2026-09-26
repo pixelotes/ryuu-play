@@ -3,6 +3,10 @@
   <div class="ptcg-table-sidebar-header">
     <h3 translate [translateParams]="{ id: gameId }">TABLE_TABLE_NAME</h3>
     <span class="ptcg-u-spacer"></span>
+    <ptcg-badge *ngIf="isPlayer" class="ptcg-turn-status"
+      [class.your-turn]="isYourTurn" [class.opponent-turn]="!isYourTurn">
+      {{ (isYourTurn ? 'TABLE_YOUR_TURN' : 'TABLE_OPPONENT_TURN') | translate }}
+    </ptcg-badge>
     <ptcg-badge>
       {{ 'TABLE_TURN_NUMBER' | translate: { turn: turn } }}
     </ptcg-badge>

@@ -35,6 +35,14 @@
     .ptcg-table-sidebar-header {
       background-color: $table-sidebar-header-background-color;
     }
+    .ptcg-turn-status.your-turn {
+      background-color: mat.get-color-from-palette($primary);
+      color: mat.get-contrast-color-from-palette($primary, default);
+    }
+    .ptcg-turn-status.opponent-turn {
+      background-color: mat.get-color-from-palette($foreground, disabled-button);
+      color: mat.get-color-from-palette($foreground, text);
+    }
   }
 
   ptcg-player-bar {

@@ -28,7 +28,9 @@
     list-style-type: none;
   }
   li {
+    border-left: 3px solid transparent;
     padding: $ptcg-sidebar-tiny-padding;
+    padding-left: calc(#{$ptcg-sidebar-tiny-padding} - 3px);
   }
 }
 

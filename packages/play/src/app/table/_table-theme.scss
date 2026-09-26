@@ -76,6 +76,9 @@
     .ptcg-game-logs-content li {
       border-bottom: $table-border;
     }
+    .ptcg-game-logs-content li:last-child {
+      border-left-color: mat.get-color-from-palette($accent);
+    }
   }
 
   ptcg-player-time {

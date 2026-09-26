@@ -14,6 +14,7 @@ config.storage.database = __dirname + '/database.sq3';
 
 // Bots config
 config.bots.defaultPassword = 'bot';
+config.bots.decksDir = __dirname + '/decks';
 
 // Sets/scans config
 config.sets.scansDir = __dirname + '/scans';

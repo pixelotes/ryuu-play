@@ -62,7 +62,11 @@ export const config = {
 
     // Simulate matches every X ticks of the scheduler
     // If set to 0, the bot matches are disabled
-    botGamesIntervalCount: 0
+    botGamesIntervalCount: 0,
+
+    // Directory with .txt deck lists (one card fullName per line, repeated
+    // per copy) to seed as bot decks on startup. Empty = seeding disabled.
+    decksDir: ''
   },
   sets: {
     scansDir: '',

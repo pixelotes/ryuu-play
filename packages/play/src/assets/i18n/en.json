@@ -176,6 +176,8 @@
   "PROFILE_AVATAR_IMAGE": "Avatar image",
   "PROFILE_AVATAR_NAME": "Avatar name",
   "PROFILE_CHANGE_EMAIL": "Change e-mail",
+  "PROFILE_CHOOSE_PRESET_AVATAR": "Choose from gallery",
+  "PROFILE_NO_PRESET_AVATARS": "No preset avatars available.",
   "PROFILE_CHANGE_EMAIL_TITLE": "Change your e-mail",
   "PROFILE_CHANGE_EMAIL_HINT": "The e-mail address can be used to recover your password.",
   "PROFILE_CHANGE_EMAIL_SUCCESS": "The e-mail address successfully changed.",

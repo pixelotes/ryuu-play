@@ -7,6 +7,7 @@ const { CardManager } = require('@ptcg/common');
 config.backend.address = 'localhost';
 config.backend.port = 12021;
 config.backend.avatarsDir = __dirname + '/avatars';
+config.backend.avatarsPresetDir = __dirname + '/avatars-preset';
 config.backend.webUiDir = __dirname + '/packages/play/dist/ptcg-play';
 
 // Storage config
@@ -16,6 +17,12 @@ config.storage.database = __dirname + '/database.sq3';
 // Bots config
 config.bots.defaultPassword = 'bot';
 config.bots.decksDir = __dirname + '/decks';
+// Fixed avatar seeded for each bot at startup (relative to avatarsPresetDir).
+config.bots.avatarPresets = {
+  SimpleBot: 'tux/tux01.png',
+  MonteCarloEasy: 'default/face01.png',
+  MonteCarloHard: 'legend/avatar01.png'
+};
 
 // Sets/scans config
 config.sets.scansDir = __dirname + '/scans';

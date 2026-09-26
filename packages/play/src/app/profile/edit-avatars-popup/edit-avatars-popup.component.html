@@ -72,6 +72,11 @@
     (click)="addAvatar()">
     {{ 'PROFILE_ADD_AVATAR' | translate }}
   </button>
+  <button mat-raised-button
+    [disabled]="loading"
+    (click)="choosePresetAvatar()">
+    {{ 'PROFILE_CHOOSE_PRESET_AVATAR' | translate }}
+  </button>
   <span class="ptcg-u-spacer"></span>
   <button mat-raised-button mat-dialog-close>
     {{ 'BUTTON_CLOSE' | translate }}

@@ -3,7 +3,7 @@ import { ApiService } from '../api.service';
 import { AvatarService } from './avatar.service';
 import { of } from 'rxjs';
 import { Response } from '../interfaces/response.interface';
-import { AvatarListResponse, AvatarResponse } from '../interfaces/avatar.interface';
+import { AvatarListResponse, AvatarPresetListResponse, AvatarResponse } from '../interfaces/avatar.interface';
 
 
 describe('AvatarService', () => {
@@ -24,6 +24,14 @@ describe('AvatarService', () => {
   };
 
   const mockResponse: Response = {
+    ok: 0
+  };
+
+  const mockPresetListResponse: AvatarPresetListResponse = {
+    presets: [
+      { folder: 'tux', fileName: 'tux01.png', path: 'tux/tux01.png' },
+      { folder: 'default', fileName: 'face01.png', path: 'default/face01.png' }
+    ],
     ok: 0
   };
 
@@ -100,6 +108,37 @@ describe('AvatarService', () => {
       expect(apiServiceSpy.post).toHaveBeenCalledWith('/v1/avatars/add', {
         name,
         imageBase64
+      });
+    });
+  });
+
+  describe('getPresets', () => {
+    it('should get avatar presets', (done) => {
+      apiServiceSpy.get.and.returnValue(of(mockPresetListResponse));
+
+      service.getPresets().subscribe(response => {
+        expect(response).toEqual(mockPresetListResponse);
+        done();
+      });
+
+      expect(apiServiceSpy.get).toHaveBeenCalledWith('/v1/avatars/presets');
+    });
+  });
+
+  describe('addPreset', () => {
+    it('should add a new avatar from a preset', (done) => {
+      apiServiceSpy.post.and.returnValue(of(mockAvatarResponse));
+      const name = 'test';
+      const path = 'tux/tux01.png';
+
+      service.addPreset(name, path).subscribe(response => {
+        expect(response).toEqual(mockAvatarResponse);
+        done();
+      });
+
+      expect(apiServiceSpy.post).toHaveBeenCalledWith('/v1/avatars/addPreset', {
+        name,
+        path
       });
     });
   });

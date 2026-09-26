@@ -1,0 +1,38 @@
+.ptcg-preset-group {
+  margin-bottom: 16px;
+}
+
+.ptcg-preset-group-title {
+  text-transform: capitalize;
+}
+
+.ptcg-preset-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+  gap: 8px;
+}
+
+.ptcg-preset-thumb {
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 2px;
+
+  &:hover:not(:disabled),
+  &:focus:not(:disabled) {
+    border-color: currentColor;
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: .5;
+  }
+
+  img {
+    border-radius: 4px;
+    display: block;
+    height: 56px;
+    width: 56px;
+  }
+}

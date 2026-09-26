@@ -10,6 +10,7 @@ import { AddAvatarPopupService } from '../add-avatar-popup/add-avatar-popup.serv
 import { AlertService } from '../../shared/alert/alert.service';
 import { ApiError } from '../../api/api.error';
 import { AvatarService } from '../../api/services/avatar.service';
+import { ChoosePresetAvatarPopupService } from '../choose-preset-avatar-popup/choose-preset-avatar-popup.service';
 import { SessionService } from '../../shared/session/session.service';
 
 @Component({
@@ -30,6 +31,7 @@ export class EditAvatarsPopupComponent implements OnInit {
     private alertService: AlertService,
     private addAvatarPopupService: AddAvatarPopupService,
     private avatarService: AvatarService,
+    private choosePresetAvatarPopupService: ChoosePresetAvatarPopupService,
     private sessionService: SessionService,
     private translate: TranslateService,
     @Inject(MAT_DIALOG_DATA) data: { userId: number },
@@ -43,6 +45,18 @@ export class EditAvatarsPopupComponent implements OnInit {
 
   public addAvatar() {
     const dialogRef = this.addAvatarPopupService.openDialog();
+    dialogRef.afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: avatar => {
+          if (avatar) {
+            this.avatars = [ ...this.avatars, avatar ];
+          }
+      }});
+  }
+
+  public choosePresetAvatar() {
+    const dialogRef = this.choosePresetAvatarPopupService.openDialog();
     dialogRef.afterClosed()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({

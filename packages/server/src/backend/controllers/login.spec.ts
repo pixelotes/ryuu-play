@@ -48,6 +48,7 @@ describe('Login', () => {
           defaultPageSize: config.backend.defaultPageSize,
           scansUrl: config.sets.scansUrl,
           avatarsUrl: config.backend.avatarsUrl,
+          avatarsPresetUrl: config.backend.avatarsPresetUrl,
           avatarFileSize: config.backend.avatarFileSize,
           avatarMinSize: config.backend.avatarMinSize,
           avatarMaxSize: config.backend.avatarMaxSize,

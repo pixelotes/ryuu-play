@@ -1,15 +1,16 @@
 import { Request, Response } from 'express';
-import { readdir, unlink } from 'fs';
+import { unlink } from 'fs';
 import { promisify } from 'util';
 import { join } from 'path';
 import { read } from 'jimp';
 
 import { AuthToken, Validate, check } from '../services';
 import { Avatar, User } from '../../storage';
-import { AvatarInfo, AvatarAddRequest } from '@ptcg/common';
+import { AvatarInfo, AvatarAddRequest, AvatarAddPresetRequest, AvatarPresetInfo } from '@ptcg/common';
 import { Controller, Get, Post } from './controller';
 import { ApiErrorEnum } from '@ptcg/common';
 import { config } from '../../config';
+import { createAvatarFileFromPreset, generateAvatarFileName, listAvatarPresets } from '../../utils/avatar-presets';
 
 export class Avatars extends Controller {
 
@@ -76,6 +77,13 @@ export class Avatars extends Controller {
     res.send({ok: true, avatar: avatarInfo});
   }
 
+  @Get('/presets')
+  @AuthToken()
+  public async onPresets(req: Request, res: Response) {
+    const presets: AvatarPresetInfo[] = await listAvatarPresets();
+    res.send({ok: true, presets});
+  }
+
   @Post('/add')
   @AuthToken()
   @Validate({
@@ -111,15 +119,56 @@ export class Avatars extends Controller {
     }
 
     try {
-      await this.db.manager.transaction(async manager => {
-        avatar = await manager.save(avatar);
-        // Set default avatar, if previously not set
-        if (!user.avatarFile) {
-          await manager.update(User, user.id, { avatarFile: avatar.fileName });
-          user.avatarFile = avatar.fileName;
-          this.core.emit(c => c.onUsersUpdate([ user ]));
-        }
+      avatar = await this.saveNewAvatar(avatar, user);
+    } catch (error) {
+      res.status(400);
+      res.send({error: ApiErrorEnum.NAME_DUPLICATE});
+      return;
+    }
+
+    res.send({ok: true, avatar: {
+      id: avatar.id,
+      name: avatar.name,
+      fileName: avatar.fileName
+    }});
+  }
+
+  @Post('/addPreset')
+  @AuthToken()
+  @Validate({
+    name: check().minLength(3).maxLength(32),
+    path: check().required()
+  })
+  public async onAddPreset(req: Request, res: Response) {
+    const body: AvatarAddPresetRequest = req.body;
+
+    const userId: number = req.body.userId;
+    const user = await User.findOneById(userId);
+
+    if (user === null) {
+      res.status(400);
+      res.send({error: ApiErrorEnum.PROFILE_INVALID});
+      return;
+    }
+
+    let avatar = new Avatar();
+    avatar.name = body.name.trim();
+    avatar.user = user;
+
+    try {
+      avatar.fileName = await createAvatarFileFromPreset(body.path);
+    } catch (error) {
+      res.status(400);
+      res.send({
+        error: ApiErrorEnum.VALIDATION_INVALID_PARAM,
+        param: 'path',
+        message: error instanceof Error ? error.message : ''
       });
+      return;
+    }
+
+    try {
+      avatar = await this.saveNewAvatar(avatar, user);
     } catch (error) {
       res.status(400);
       res.send({error: ApiErrorEnum.NAME_DUPLICATE});
@@ -260,6 +309,23 @@ export class Avatars extends Controller {
     res.send({ ok: true });
   }
 
+  // Saves a freshly built Avatar (file already written to avatarsDir) and,
+  // if the user had no default avatar yet, marks it as the default one.
+  // Shared by onAdd and onAddPreset so both go through the same path.
+  private async saveNewAvatar(avatar: Avatar, user: User): Promise<Avatar> {
+    let saved = avatar;
+    await this.db.manager.transaction(async manager => {
+      saved = await manager.save(avatar);
+      // Set default avatar, if previously not set
+      if (!user.avatarFile) {
+        await manager.update(User, user.id, { avatarFile: saved.fileName });
+        user.avatarFile = saved.fileName;
+        this.core.emit(c => c.onUsersUpdate([ user ]));
+      }
+    });
+    return saved;
+  }
+
   private async removeAvatarFile(fileName: string): Promise<void> {
     const unlinkAsync = promisify(unlink);
     const path = join(config.backend.avatarsDir, fileName);
@@ -288,22 +354,7 @@ export class Avatars extends Controller {
     }
 
     const extension = image.getExtension();
-    const readDirAsync = promisify(readdir);
-    const files: string[] = await readDirAsync(config.backend.avatarsDir);
-    let num = Math.round(10000 * Math.random());
-    let fileName: string;
-    let maxRetries = 1000;
-    do {
-      num++;
-      if (num >= 10000) {
-        num = 0;
-      }
-      maxRetries--;
-      if (maxRetries === 0) {
-        throw new Error('Could not generate a file name.');
-      }
-      fileName = String(num).padStart(5, '0') + '.' + extension;
-    } while (files.includes(fileName));
+    const fileName = await generateAvatarFileName(extension);
 
     await image.writeAsync(join(config.backend.avatarsDir, fileName));
     return fileName;

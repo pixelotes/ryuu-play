@@ -5,10 +5,15 @@ import { BotClient } from './bot-client';
 import { Core } from '../core/core';
 import { BotAiFactory, DeckAnalyser, GameError } from '@ptcg/common';
 import { GameMessage } from '@ptcg/common';
-import { User, Deck } from '../../storage';
+import { Avatar, User, Deck } from '../../storage';
 import { config } from '../../config';
 import { Md5 } from '../../utils/md5';
+import { createAvatarFileFromPreset } from '../../utils/avatar-presets';
 import { BotGamesTask } from './bot-games-task';
+
+// Name given to the Avatar row seeded from config.bots.avatarPresets, so a
+// restart can find it again instead of creating a duplicate.
+const BOT_AVATAR_NAME = 'Preset';
 
 export class BotManager {
 
@@ -36,6 +41,7 @@ export class BotManager {
       const user = await this.findOrCreateUser(bot.name, registered);
       bot.user = user;
       await this.seedDecksFromDir(user, config.bots.decksDir);
+      await this.seedBotAvatar(user, config.bots.avatarPresets[bot.name]);
       core.connect(bot);
     }
 
@@ -113,6 +119,37 @@ export class BotManager {
     deck.cardTypes = newCardTypes;
 
     await deck.save();
+  }
+
+  // Gives a bot user a fixed avatar copied from config.bots.avatarPresets,
+  // once. Idempotent across restarts: reuses the previously seeded Avatar
+  // row (found by its fixed name) instead of creating a duplicate. Never
+  // throws, so a missing/invalid preset can't stop the server from starting.
+  private async seedBotAvatar(user: User, presetPath: string): Promise<void> {
+    if (!presetPath) {
+      return;
+    }
+
+    try {
+      let avatar = await Avatar.findOne({ where: { user: { id: user.id }, name: BOT_AVATAR_NAME } });
+
+      if (avatar === null) {
+        const fileName = await createAvatarFileFromPreset(presetPath);
+        avatar = new Avatar();
+        avatar.user = user;
+        avatar.name = BOT_AVATAR_NAME;
+        avatar.fileName = fileName;
+        avatar = await avatar.save();
+      }
+
+      if (user.avatarFile !== avatar.fileName) {
+        user.avatarFile = avatar.fileName;
+        await User.update(user.id, { avatarFile: avatar.fileName });
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.warn(`BotManager: failed to seed avatar for bot "${user.name}": ${message}`);
+    }
   }
 
   // e.g. "gb-zapping-selfdestruct" -> "GB: Zapping Selfdestruct", "haymaker" -> "Haymaker"

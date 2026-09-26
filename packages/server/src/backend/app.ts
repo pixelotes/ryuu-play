@@ -61,6 +61,7 @@ export class App {
 
     app.use('/scans', express.static(config.sets.scansDir));
     app.use('/avatars', express.static(config.backend.avatarsDir));
+    app.use('/avatars-preset', express.static(config.backend.avatarsPresetDir));
 
     return app;
   }

@@ -1,5 +1,5 @@
 import { Response } from './response.interface';
-import { AvatarInfo } from '@ptcg/common';
+import { AvatarInfo, AvatarPresetInfo } from '@ptcg/common';
 
 export interface AvatarResponse extends Response {
   avatar: AvatarInfo;
@@ -7,4 +7,8 @@ export interface AvatarResponse extends Response {
 
 export interface AvatarListResponse extends Response {
   avatars: AvatarInfo[];
+}
+
+export interface AvatarPresetListResponse extends Response {
+  presets: AvatarPresetInfo[];
 }

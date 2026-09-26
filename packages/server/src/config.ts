@@ -11,6 +11,11 @@ export const config = {
     defaultPageSize: 50,
     avatarsDir: '',
     avatarsUrl: '/avatars/{name}',
+    // Directory with preset avatar images users (and bots) can pick from,
+    // organized in subfolders (e.g. avatarsPresetDir/tux/tux01.png). Empty
+    // = preset gallery disabled.
+    avatarsPresetDir: '',
+    avatarsPresetUrl: '/avatars-preset/{name}',
     avatarFileSize: 256 * 1024,
     avatarMinSize: 64,
     avatarMaxSize: 512,
@@ -66,7 +71,12 @@ export const config = {
 
     // Directory with .txt deck lists (one card fullName per line, repeated
     // per copy) to seed as bot decks on startup. Empty = seeding disabled.
-    decksDir: ''
+    decksDir: '',
+
+    // Maps a bot name to a preset avatar path (relative to
+    // config.backend.avatarsPresetDir, e.g. 'tux/tux01.png') applied once
+    // at startup. Missing entries leave the bot without a preset avatar.
+    avatarPresets: {} as { [botName: string]: string }
   },
   sets: {
     scansDir: '',

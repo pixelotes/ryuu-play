@@ -1,0 +1,31 @@
+<h2 mat-dialog-title translate>PROFILE_CHOOSE_PRESET_AVATAR</h2>
+
+<mat-dialog-content>
+
+  <mat-progress-bar *ngIf="loading" color="accent" mode="indeterminate" class="ptcg-u-top">
+  </mat-progress-bar>
+
+  <div *ngFor="let group of groups" class="ptcg-preset-group">
+    <h4 class="ptcg-preset-group-title">{{ group.folder }}</h4>
+    <div class="ptcg-preset-grid">
+      <button type="button" class="ptcg-preset-thumb"
+        *ngFor="let preset of group.presets"
+        [disabled]="loading"
+        (click)="selectPreset(preset)">
+        <img [src]="getImageUrl(preset)" [alt]="preset.fileName">
+      </button>
+    </div>
+  </div>
+
+  <div class="ptcg-u-padding" *ngIf="!loading && groups.length === 0" translate>
+    PROFILE_NO_PRESET_AVATARS
+  </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <span class="ptcg-u-spacer"></span>
+  <button mat-raised-button mat-dialog-close>
+    {{ 'BUTTON_CANCEL' | translate }}
+  </button>
+</mat-dialog-actions>

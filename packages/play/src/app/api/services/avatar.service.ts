@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { ApiService } from '../api.service';
-import { AvatarListResponse, AvatarResponse } from '../interfaces/avatar.interface';
+import { AvatarListResponse, AvatarPresetListResponse, AvatarResponse } from '../interfaces/avatar.interface';
 import { Response } from '../interfaces/response.interface';
 
 
@@ -30,6 +30,17 @@ export class AvatarService {
     return this.api.post<AvatarResponse>('/v1/avatars/add', {
       name: avatarName,
       imageBase64
+    });
+  }
+
+  public getPresets() {
+    return this.api.get<AvatarPresetListResponse>('/v1/avatars/presets');
+  }
+
+  public addPreset(avatarName: string, path: string) {
+    return this.api.post<AvatarResponse>('/v1/avatars/addPreset', {
+      name: avatarName,
+      path
     });
   }
 

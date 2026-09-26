@@ -1,5 +1,6 @@
 const { BotManager, config } = require('@ptcg/server');
 const { SimpleBot } =  require('@ptcg/simple-bot');
+const { McBot } = require('@ptcg/mc-bot');
 const { CardManager } = require('@ptcg/common');
 
 // Backend config
@@ -51,4 +52,10 @@ cardManager.defineFormat('Base Sets', [
 
 // Define bots
 const botManager = BotManager.getInstance();
-botManager.registerBot(new SimpleBot('bot'));
+// Bot names must match the server's user name pattern: /^[a-zA-Z0-9]{3,32}$/
+// (no spaces). The former 'bot' user stays in the database, unused.
+botManager.registerBot(new SimpleBot('SimpleBot'));
+// Flat Monte Carlo bots: Hard sees the real (hidden) cards, Easy plays honest
+// and resamples everything it can't see before each playout.
+botManager.registerBot(new McBot('MonteCarloHard', { cheat: true, timeBudgetMs: 300 }));
+botManager.registerBot(new McBot('MonteCarloEasy', { cheat: false, timeBudgetMs: 300 }));

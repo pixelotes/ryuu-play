@@ -15,7 +15,7 @@
 
 <div class="ptcg-board-container" [dropTarget]="boardTarget">
 
-  <div class="ptcg-board-player upside-down">
+  <div class="ptcg-board-player upside-down" [class.active-player]="isPlayerActive(topPlayer)">
     <!-- Top Active -->
     <div class="ptcg-board-row ptcg-board-active">
       <ptcg-board-card
@@ -63,7 +63,7 @@
     </ptcg-board-prizes>
   </div>
 
-  <div class="ptcg-board-player">
+  <div class="ptcg-board-player" [class.active-player]="isPlayerActive(bottomPlayer)">
 
     <!-- Bottom Active -->
     <div class="ptcg-board-row ptcg-board-active">

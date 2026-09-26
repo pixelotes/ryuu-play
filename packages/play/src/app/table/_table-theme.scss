@@ -18,6 +18,13 @@
   $table-sidebar-time-running-progress: mat.get-color-from-palette($accent);
   $choose-avatar-background-color: mat.get-color-from-palette($background, hover);
 
+  ptcg-board {
+    .ptcg-board-player.active-player {
+      background-color: rgba(mat.get-color-from-palette($primary), 0.06);
+      box-shadow: inset 0 -2px 0 0 mat.get-color-from-palette($primary);
+    }
+  }
+
   ptcg-hand {
     background-color: $hand-background-color;
     border-top: $table-border;

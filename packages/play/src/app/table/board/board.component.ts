@@ -320,6 +320,14 @@ export class BoardComponent implements OnDestroy {
       });
   }
 
+  public isPlayerActive(player: Player): boolean {
+    const state = this.gameState && this.gameState.state;
+    if (!state || !player || !state.players[state.activePlayer]) {
+      return false;
+    }
+    return player.id === state.players[state.activePlayer].id;
+  }
+
   public onStadiumClick(card: Card) {
     const isBottomOwner = this.bottomPlayer && this.bottomPlayer.id === this.clientId;
     const isDeleted = this.gameState.deleted;

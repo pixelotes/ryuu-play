@@ -1,17 +1,17 @@
 <mat-nav-list>
-  <a routerLink="/games" mat-list-item>
+  <a routerLink="/games" routerLinkActive="ptcg-sidenav-active" mat-list-item>
     {{ 'MAIN_GAMES' | translate }}
   </a>
-  <a routerLink="/deck" mat-list-item>
+  <a routerLink="/deck" routerLinkActive="ptcg-sidenav-active" mat-list-item>
     {{ 'MAIN_DECKS' | translate }}
   </a>
-  <a routerLink="/ranking" mat-list-item>
+  <a routerLink="/ranking" routerLinkActive="ptcg-sidenav-active" mat-list-item>
     {{ 'MAIN_RANKING' | translate }}
   </a>
-  <a routerLink="/replays" mat-list-item>
+  <a routerLink="/replays" routerLinkActive="ptcg-sidenav-active" mat-list-item>
     {{ 'MAIN_REPLAYS' | translate }}
   </a>
-  <a routerLink="/message" mat-list-item>
+  <a routerLink="/message" routerLinkActive="ptcg-sidenav-active" mat-list-item>
     <span
       [matBadge]="unreadMessages$ | async"
       matBadgeOverlap="false"

@@ -3,3 +3,12 @@
 .ptcg-sidenav-header {
   padding: map-get($padding, small);
 }
+
+.ptcg-sidenav-active {
+  border-left: 4px solid transparent;
+  font-weight: 600;
+
+  &.mat-list-item {
+    padding-left: map-get($padding, normal) - 4px;
+  }
+}

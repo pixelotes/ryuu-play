@@ -5,11 +5,14 @@
   $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
   $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
   $avatar-background-color: mat.get-color-from-palette($background, app-bar);
   $logged-user-background-color: mat.get-color-from-palette($primary, 200); //mat-color($background, focused-button);
   $logged-user-text-color: mat.get-contrast-color-from-palette($primary, 200);
   $sidenav-table-header-background-color: mat.get-color-from-palette($background, background);
   $sidenav-deleted-text-color: mat.get-color-from-palette($foreground, secondary-text);
+  $sidenav-active-background-color: mat.get-color-from-palette($background, selected-button);
+  $sidenav-active-border-color: mat.get-color-from-palette($accent, default);
 
   ptcg-toolbar {
     .ptcg-logged-user {
@@ -24,6 +27,10 @@
     }
     .ptcg-sidenav-header {
       background-color: $sidenav-table-header-background-color;
+    }
+    .ptcg-sidenav-active {
+      background-color: $sidenav-active-background-color;
+      border-left-color: $sidenav-active-border-color;
     }
   }
 }

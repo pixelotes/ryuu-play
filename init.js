@@ -16,6 +16,8 @@ config.storage.database = __dirname + '/database.sq3';
 
 // Bots config
 config.bots.defaultPassword = 'bot';
+// Pause between bot actions, long enough to follow what the bot does.
+config.bots.actionDelay = 700;
 config.bots.decksDir = __dirname + '/decks';
 // Fixed avatar seeded for each bot at startup (relative to avatarsPresetDir).
 config.bots.avatarPresets = {

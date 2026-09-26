@@ -6,8 +6,31 @@ import { Controller, Get, Post } from './controller';
 import { DeckSaveRequest } from '@ptcg/common';
 import { ApiErrorEnum } from '@ptcg/common';
 import { User, Deck } from '../../storage';
+import { BotClient } from '../../game/bots/bot-client';
 
 export class Decks extends Controller {
+
+  @Get('/bot/:userId')
+  @AuthToken()
+  public async onBotList(req: Request, res: Response) {
+    const botUserId: number = parseInt(req.params.userId, 10);
+    const bot = this.core.clients.find(c => c instanceof BotClient && c.user.id === botUserId);
+
+    if (bot === undefined) {
+      res.send({error: ApiErrorEnum.PROFILE_INVALID});
+      return;
+    }
+
+    const deckRows = await Deck.find({ where: { user: { id: botUserId }, isValid: true } });
+
+    const decks = deckRows.map(deck => ({
+      id: deck.id,
+      name: deck.name,
+      formatNames: JSON.parse(deck.formatNames)
+    }));
+
+    res.send({ok: true, decks});
+  }
 
   @Get('/list')
   @AuthToken()

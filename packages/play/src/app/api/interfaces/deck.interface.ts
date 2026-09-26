@@ -25,3 +25,13 @@ export interface Deck {
 export interface DeckResponse extends Response {
   deck: Deck;
 }
+
+export interface BotDeckListEntry {
+  id: number;
+  name: string;
+  formatNames: string[];
+}
+
+export interface BotDeckListResponse extends Response {
+  decks: BotDeckListEntry[];
+}

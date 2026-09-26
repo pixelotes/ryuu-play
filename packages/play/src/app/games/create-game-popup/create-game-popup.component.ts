@@ -2,11 +2,13 @@ import { Component, Inject } from '@angular/core';
 import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { Format, GameSettings, Rules } from '@ptcg/common';
 import { SelectPopupOption } from '../../shared/alert/select-popup/select-popup.component';
-import { DeckListEntry } from '../../api/interfaces/deck.interface';
+import { BotDeckListEntry, DeckListEntry } from '../../api/interfaces/deck.interface';
 import { CardsBaseService } from '../../shared/cards/cards-base.service';
+import { DeckService } from '../../api/services/deck.service';
 
 export interface CreateGamePopupData {
   decks: DeckListEntry[];
+  invitedBotUserId?: number;
 }
 
 export interface CreateGamePopupResult {
@@ -26,7 +28,9 @@ export class CreateGamePopupComponent {
   public formats: Format[];
   public format: Format;
   public settings = new GameSettings();
+  public botDecks: BotDeckListEntry[] = [];
   private allDecks: DeckListEntry[];
+  private allBotDecks: BotDeckListEntry[] = [];
 
   public timeLimits: SelectPopupOption<number>[] = [
     { value: 0, viewValue: 'GAMES_LIMIT_NO_LIMIT' },
@@ -37,6 +41,7 @@ export class CreateGamePopupComponent {
 
   constructor(
     cardsBaseService: CardsBaseService,
+    private deckService: DeckService,
     private dialogRef: MatDialogRef<CreateGamePopupComponent>,
     @Inject(MAT_DIALOG_DATA) data: CreateGamePopupData,
   ) {
@@ -55,6 +60,17 @@ export class CreateGamePopupComponent {
     });
 
     this.onFormatChange(this.formats[0]);
+
+    if (data.invitedBotUserId !== undefined) {
+      this.deckService.getBotDecks(data.invitedBotUserId).subscribe({
+        next: response => {
+          if (response.ok) {
+            this.allBotDecks = response.decks;
+            this.updateBotDecks();
+          }
+        }
+      });
+    }
   }
 
   public confirm() {
@@ -76,6 +92,7 @@ export class CreateGamePopupComponent {
     this.decks = format.name
       ? this.allDecks.filter(deck => deck.formatNames.includes(format.name))
       : this.allDecks;
+    this.updateBotDecks();
   }
 
   private getDeckFromFormat(format: Format): DeckListEntry {
@@ -86,6 +103,17 @@ export class CreateGamePopupComponent {
       return this.allDecks.find(deck => deck.formatNames.includes(this.format.name));
     }
     return this.deck;
+  }
+
+  private updateBotDecks() {
+    this.botDecks = this.format && this.format.name
+      ? this.allBotDecks.filter(deck => deck.formatNames.includes(this.format.name))
+      : this.allBotDecks;
+
+    // Reset to "Random" if the previously selected bot deck is no longer valid for this format
+    if (this.settings.botDeckId !== undefined && !this.botDecks.some(deck => deck.id === this.settings.botDeckId)) {
+      this.settings.botDeckId = undefined;
+    }
   }
 
 }

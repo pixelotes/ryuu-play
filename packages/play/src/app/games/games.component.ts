@@ -68,16 +68,16 @@ export class GamesComponent implements OnInit {
 
   }
 
-  private showCreateGamePopup(decks: DeckListEntry[]): Promise<CreateGamePopupResult> {
+  private showCreateGamePopup(decks: DeckListEntry[], invitedBotUserId?: number): Promise<CreateGamePopupResult> {
     const dialog = this.dialog.open(CreateGamePopupComponent, {
       maxWidth: '100%',
       width: '350px',
-      data: { decks }
+      data: { decks, invitedBotUserId }
     });
     return dialog.afterClosed().toPromise();
   }
 
-  public createGame(invitedId?: number) {
+  public createGame(invitedId?: number, invitedUserId?: number) {
     this.loading = true;
     this.deckService.getList()
       .pipe(
@@ -95,7 +95,7 @@ export class GamesComponent implements OnInit {
             return EMPTY;
           }
 
-          return from(this.showCreateGamePopup(options));
+          return from(this.showCreateGamePopup(options, invitedUserId));
         }),
         switchMap(result => {
           this.loading = true;

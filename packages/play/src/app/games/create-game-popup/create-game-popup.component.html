@@ -24,6 +24,17 @@
       </mat-select>
     </mat-form-field>
 
+    <!-- Bot deck -->
+    <mat-form-field *ngIf="botDecks.length > 0">
+      <mat-label translate>GAMES_BOT_DECK</mat-label>
+      <mat-select [(value)]="settings.botDeckId">
+        <mat-option [value]="undefined">{{ 'GAMES_BOT_DECK_RANDOM' | translate }}</mat-option>
+        <mat-option *ngFor="let option of botDecks" [value]="option.id">
+          {{ option.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
     <!-- Time limit -->
     <mat-form-field>
       <mat-label translate>GAMES_TIME_LIMIT</mat-label>

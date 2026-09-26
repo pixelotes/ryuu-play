@@ -70,7 +70,8 @@ export class BotClient implements Client {
 
   protected addGameHandler(game: Game): BotGameHandler {
     const formatName = game.state.rules.formatName;
-    const gameHandler = new BotGameHandler(this, this.botAiFactory, game, this.loadDeck(formatName));
+    const deckId = game.gameSettings.botDeckId;
+    const gameHandler = new BotGameHandler(this, this.botAiFactory, game, this.loadDeck(formatName, deckId));
     this.gameHandlers.push(gameHandler);
     return gameHandler;
   }
@@ -90,7 +91,37 @@ export class BotClient implements Client {
     return game;
   }
 
-  public async loadDeck(formatName: string = ''): Promise<string[]> {
+  // Loads the deck chosen by the inviting player (deckId), falling back to a
+  // random valid deck when it's missing, doesn't belong to this bot, or isn't
+  // valid for the requested format.
+  public async loadDeck(formatName: string = '', deckId?: number): Promise<string[]> {
+    if (deckId !== undefined) {
+      const chosen = await this.loadChosenDeck(deckId, formatName);
+      if (chosen !== undefined) {
+        return chosen;
+      }
+    }
+    return this.loadRandomDeck(formatName);
+  }
+
+  private async loadChosenDeck(deckId: number, formatName: string): Promise<string[] | undefined> {
+    const deck = await Deck.findOne({
+      where: {
+        id: deckId,
+        user: { id: this.user.id },
+        isValid: true
+      }
+    });
+
+    if (deck === undefined || deck === null) {
+      return undefined;
+    }
+
+    const cards = JSON.parse(deck.cards);
+    return this.validateDeck(cards, formatName) ? cards : undefined;
+  }
+
+  private async loadRandomDeck(formatName: string): Promise<string[]> {
     const deckRows = await Deck.find({
       where: {
         user: { id: this.user.id },

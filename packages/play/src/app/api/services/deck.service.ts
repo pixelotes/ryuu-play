@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { ApiService } from '../api.service';
-import { DeckListResponse, DeckResponse } from '../interfaces/deck.interface';
+import { BotDeckListResponse, DeckListResponse, DeckResponse } from '../interfaces/deck.interface';
 import { Response } from '../interfaces/response.interface';
 
 
@@ -14,6 +14,10 @@ export class DeckService {
 
   public getList() {
     return this.api.get<DeckListResponse>('/v1/decks/list');
+  }
+
+  public getBotDecks(botUserId: number) {
+    return this.api.get<BotDeckListResponse>('/v1/decks/bot/' + botUserId);
   }
 
   public getDeck(deckId: number) {

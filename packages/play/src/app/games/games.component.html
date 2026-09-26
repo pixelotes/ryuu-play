@@ -17,7 +17,7 @@
           <button mat-menu-item
             *ngIf="clientId !== client.clientId"
             [disabled]="loading"
-            (click)="createGame(client.clientId)">
+            (click)="createGame(client.clientId, client.user.userId)">
             {{ 'BUTTON_INVITE' | translate }}
           </button>
           <button mat-menu-item

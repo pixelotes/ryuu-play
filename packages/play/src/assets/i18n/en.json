@@ -92,6 +92,8 @@
   "ERROR_UNSUPPORTED_VERSION": "The server is not supported by this client.",
   "GAMES_ACTIVE_GAMES_TITLE": "Active games",
   "GAMES_ALL_CARDS_ALLOWED": "All cards allowed",
+  "GAMES_BOT_DECK": "Bot deck",
+  "GAMES_BOT_DECK_RANDOM": "Random",
   "GAMES_CREATE_GAME_BUTTON": "Create game",
   "GAMES_CREATE_GAME_TITLE": "Create game",
   "GAMES_DRAW_CARD_FIRST_TURN": "First player draws a card",

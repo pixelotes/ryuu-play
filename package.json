@@ -12,6 +12,7 @@
     "packages/sets",
     "packages/server",
     "packages/simple-bot",
+    "packages/mc-bot",
     "packages/play",
     "packages/cordova"
   ],
@@ -20,6 +21,7 @@
   "dependencies": {
     "@ptcg/server": "*",
     "@ptcg/simple-bot": "*",
-    "@ptcg/sets": "*"
+    "@ptcg/sets": "*",
+    "@ptcg/mc-bot": "*"
   }
 }
